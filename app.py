@@ -54,14 +54,6 @@ def metrics_render():
     return json.dumps({'all_packets': result})
 
 
-@app.route('/radio.gif')
-def templated_svg():
-    "Example using a template in the templates directory."
-    # width = request.args.get('width', '800')
-    # height = request.args.get('height', '600')
-    gif = open(os.path.join(app.root_path, 'images', 'radio.gif')).read()
-    return gif
-
 def sampleData(data, sampling_type, samplingNum):
     result = []
     if sampling_type == "Binning":

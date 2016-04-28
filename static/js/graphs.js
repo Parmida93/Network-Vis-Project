@@ -6,15 +6,8 @@ var quic_data;
 var https_data;
 var deleted = [];
 
-$(document).ready(function(){
-//console.log("dallam")
-    $( document ).ajaxStart(function() {
-    $('.mask').addClass('ajax');
-    });
-    $( document ).ajaxComplete(function() {
-    $('.mask').removeClass('ajax');
-    });
-})
+
+//$(document).ready(function() { $("#loader").append("<img src='./static/images/radio.gif') }}"+ Math.random() + "'/>"); })
 
 function changeMetric(event){
     event = event || window.event;
@@ -62,6 +55,10 @@ function changeTraceFile(){
     if(type_name == "HTTPS/QUIC"){
         var trace_table = document.getElementById("table");
         trace_table.style.display = "none";
+//        var radio = document.getElementById("radio");
+//        temp = radio.src;
+//        radio.src ="none";
+//        radio.src=temp;
         var loader = document.getElementById("loader");
         loader.style.display = "block";
     }

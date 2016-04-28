@@ -11,6 +11,8 @@ import json
 # from TextVisulization import compute_tfidf, readFiles
 # import TextVisulization
 import math
+from flask import make_response
+from Sampling import binning, random_sampling, reservoir_sampling
 
 app = Flask(__name__)
 
@@ -38,35 +40,47 @@ def index():
 def metrics_render():
     type_name = request.form['type_name']
     file_name = request.form['trace_file']
+    sampling_type = request.form['sampling_type']
+    samplingNo = request.form['samplingNo']
     result = []
     if type_name == "Packet Size" or type_name == "Payload Size":
-        result = read_file_type1(type_name, file_name)
+        result1 = read_file_type1(type_name, file_name)
+        result = sampleData(result1, sampling_type, samplingNo)
     elif type_name == "Packet Loss Rate":
         result = read_file_type2(type_name, file_name)
     elif type_name == "HTTPS/QUIC":
         result = read_file_type3(type_name, file_name)
     return json.dumps({'all_packets': result})
 
+
+@app.route('/radio.gif')
+def templated_svg():
+    "Example using a template in the templates directory."
+    # width = request.args.get('width', '800')
+    # height = request.args.get('height', '600')
+    gif = open(os.path.join(app.root_path, 'images', 'radio.gif')).read()
+    return gif
+
+def sampleData(data, sampling_type, samplingNum):
+    result = []
+    if sampling_type == "Binning":
+        result = binning(data, int(samplingNum))
+    elif sampling_type == "Random Sampling":
+        result = random_sampling(data, int(samplingNum))
+    elif sampling_type == "Reservoir Sampling":
+        result = reservoir_sampling(data, int(samplingNum))
+    return result
+
+
 def read_file_type1(type_name, file_name):
     array_result = []
     file_path = './Results/' + type_name + '/' + file_name + '.txt'
     f = open(file_path, 'r')
     for line in f:
-        array_result.append(line)
-    n = 80
-    length_group = int(math.ceil(len(array_result) * 1.0 / n))
-    print length_group
-    grouped = [0 for i in range(n)]
-    for i in range(0, len(array_result)):
-        index = int(math.floor(i * 1.0 / length_group))
-        grouped[index] += int(array_result[i])
-    for i in range(0, len(grouped)):
-        if i == len(grouped) - 1:
-            grouped[i] = grouped[i] * 1.0 / (len(array_result) - (n - 1) * length_group)
-        else:
-            grouped[i] = grouped[i] * 1.0 / length_group
+        array_result.append(float(line))
     f.close()
-    return grouped
+    return array_result
+
 
 def read_file_type2(type_name, file_name):
     array_result = []
@@ -98,6 +112,7 @@ def compare_render():
     type_name = request.form['type_name']
     quic_result, https_result = read_file_comp1(type_name)
     return json.dumps({'quic_packets': quic_result, 'https_packets': https_result})
+
 
 def read_file_comp1(type_name):
     path = './Results/' + type_name

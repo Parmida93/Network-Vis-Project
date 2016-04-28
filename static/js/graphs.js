@@ -6,6 +6,16 @@ var quic_data;
 var https_data;
 var deleted = [];
 
+$(document).ready(function(){
+//console.log("dallam")
+    $( document ).ajaxStart(function() {
+    $('.mask').addClass('ajax');
+    });
+    $( document ).ajaxComplete(function() {
+    $('.mask').removeClass('ajax');
+    });
+})
+
 function changeMetric(event){
     event = event || window.event;
     var source = event.target || event.srcElement;
@@ -26,6 +36,12 @@ function changeMetric(event){
     var options = document.getElementById("con33333");
     options.style.display = "none";
 
+    var sampling_div = document.getElementById("sampling_div")
+    if(type_name == "Packet Size" || type_name == "Payload Size")
+        sampling_div.style.display = "block";
+    else
+        sampling_div.style.display = "none";
+
     changeTraceFile();
 }
 
@@ -37,34 +53,20 @@ function changeTraceFile(){
     var trace_file = document.getElementById("trace_file_name");
     var trace_file_selected = trace_file.value;
 
-	$.ajax({
-		type: 'POST',
-		url: '/metrics',
-		data: {
-		    'type_name': type_name,
-			'trace_file': trace_file_selected,
-		},
-		success: function(msg){
-		    var parsed = JSON.parse(msg)
-            d3.select("svg").remove();
-            if (type_name == "Packet Size" || type_name == "Payload Size")
-		        drawBarChart(parsed['all_packets']);
-		    else if (type_name == "Packet Loss Rate")
-		        drawDonutChart(parsed['all_packets']);
-		    else if (type_name == "HTTPS/QUIC")
-		        makeTraceTable(parsed['all_packets'])
-//		    drawScatterPlot(parsed['vis_results'], parsed['sampled_labels'])
-		}
-	});
-}
+    var sampling_type_element = document.getElementById("sampling_type");
+    var sampling_type = sampling_type_element.value;
 
-function changeSampling(){
-    var video_options = document.getElementById("con333");
-    video_options.style.display = "block";
+    var sampling_no_element = document.getElementById("samplingNo");
+    var samplingNo = sampling_no_element.value;
+
+    if(type_name == "HTTPS/QUIC"){
+        var trace_table = document.getElementById("table");
+        trace_table.style.display = "none";
+        var loader = document.getElementById("loader");
+        loader.style.display = "block";
+    }
 
 
-    var trace_file = document.getElementById("trace_file_name");
-    var trace_file_selected = trace_file.value;
 
 	$.ajax({
 		type: 'POST',
@@ -72,6 +74,8 @@ function changeSampling(){
 		data: {
 		    'type_name': type_name,
 			'trace_file': trace_file_selected,
+            'sampling_type': sampling_type,
+            'samplingNo': samplingNo,
 		},
 		success: function(msg){
 		    var parsed = JSON.parse(msg)
@@ -152,12 +156,14 @@ function showTrace(event){
     var options = document.getElementById("con333");
     options.style.display = "block";
 
+    var sampling_div = document.getElementById("sampling_div")
+    sampling_div.style.display = "none";
+
     changeTraceFile();
 }
 
 function makeTraceTable(packets){
     var trace_table = document.getElementById("table");
-    trace_table.style.display = "block";
     $("#table:not(:first) tr").remove();
     for(i = 0; i < packets.length; i++){
         var row = trace_table.insertRow(i+1);
@@ -166,7 +172,10 @@ function makeTraceTable(packets){
             var cell1 = row.insertCell(j);
             cell1.innerHTML = packet[j];
         }
-    }
+    };
+
+    loader.style.display = "none";
+    trace_table.style.display = "block";
 }
 
 function showVideoOptions(videoNo){

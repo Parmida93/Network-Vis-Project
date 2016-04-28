@@ -6,6 +6,16 @@ var quic_data;
 var https_data;
 var deleted = [];
 
+$(document).ready(function(){
+//console.log("dallam")
+    $( document ).ajaxStart(function() {
+    $('.mask').addClass('ajax');
+    });
+    $( document ).ajaxComplete(function() {
+    $('.mask').removeClass('ajax');
+    });
+})
+
 function changeMetric(event){
     event = event || window.event;
     var source = event.target || event.srcElement;
@@ -48,6 +58,15 @@ function changeTraceFile(){
 
     var sampling_no_element = document.getElementById("samplingNo");
     var samplingNo = sampling_no_element.value;
+
+    if(type_name == "HTTPS/QUIC"){
+        var trace_table = document.getElementById("table");
+        trace_table.style.display = "none";
+        var loader = document.getElementById("loader");
+        loader.style.display = "block";
+    }
+
+
 
 	$.ajax({
 		type: 'POST',
@@ -145,7 +164,6 @@ function showTrace(event){
 
 function makeTraceTable(packets){
     var trace_table = document.getElementById("table");
-    trace_table.style.display = "block";
     $("#table:not(:first) tr").remove();
     for(i = 0; i < packets.length; i++){
         var row = trace_table.insertRow(i+1);
@@ -154,7 +172,10 @@ function makeTraceTable(packets){
             var cell1 = row.insertCell(j);
             cell1.innerHTML = packet[j];
         }
-    }
+    };
+
+    loader.style.display = "none";
+    trace_table.style.display = "block";
 }
 
 function showVideoOptions(videoNo){

@@ -2,6 +2,7 @@
 
 
 {% block content %}
+    <div class="mask"></div>
   <div id="cont">
       <div id="con33"></div>
       <div id="con333" style="border: inset; height:70px; display:none">
@@ -49,6 +50,8 @@
                   </tr>
               </table>
           </div>
+          <div align="center" id="loader" style="display:none"><img align="center" src="{{ url_for('static',filename='radio.gif') }}"></div>
+
           <div class="chart-wrapper">
                 <div class="chart-title">
 
@@ -60,7 +63,7 @@
       </div>
 
 
-      <div id="con33333" style="border: inset; display:none">
+      <div id="con33333" style="height:100px; border: inset; display:none">
           <div align="left" style="width: 400px; float:left;">
                 <label style="color:navy; font-size: 17px; font-family: sans-serif;"> Protocols: <br> </label>
                 <input type="checkbox" name="protocol" id="HTTPS_protocol" value="HTTPS" onclick="changeProtocol()" checked> HTTPS <br>

@@ -11,6 +11,7 @@ import json
 # from TextVisulization import compute_tfidf, readFiles
 # import TextVisulization
 import math
+from flask import make_response
 from matplotlib.mathtext import MathtextBackend
 from Sampling import binning, random_sampling, reservoir_sampling
 
@@ -52,6 +53,14 @@ def metrics_render():
         result = read_file_type3(type_name, file_name)
     return json.dumps({'all_packets': result})
 
+
+@app.route('/radio.gif')
+def templated_svg():
+    "Example using a template in the templates directory."
+    # width = request.args.get('width', '800')
+    # height = request.args.get('height', '600')
+    gif = open(os.path.join(app.root_path, 'images', 'radio.gif')).read()
+    return gif
 
 def sampleData(data, sampling_type, samplingNum):
     result = []

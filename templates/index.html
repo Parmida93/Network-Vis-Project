@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  <div id="cont">
+      <div id="con33"></div>
+      <div id="con333" style="border: inset; display:none">
+          <div>
+              <label style="color:navy; font-size: 17px; font-family: sans-serif;">Trace File:</label>
+                <select id="trace_file_name" onchange="changeTraceFile()" style="display:none">
+                    <option selected>Video1_HTTPS</option>
+                    <option>Video1_QUIC</option>
+                    <option>Video2_HTTPS</option>
+                    <option>Video2_QUIC</option>
+                    <option>Video3_HTTPS</option>
+                    <option>Video3_QUIC</option>
+                    <option>Video4_HTTPS</option>
+                    <option>Video4_QUIC</option>
+                </select>
+          </div>
+
+          <div align="left" style="width: 400px; float:left;">
+              <label style="color:navy; font-size: 17px; font-family: sans-serif;">Reduction Way:</label>
+              <select id="Sampling" onchange="changeSampling()" style="display:none">
+                    <option selected>Binning</option>
+                    <option>Random Sampling</option>
+                    <option>Adaptive Sampling</option>
+                    <option>Reservoir Sampling</option>
+              </select>
+          </div>
+          <label><br></label>
+      </div>
+
+      <div id="con3333" style="z-index: 1;">
+          <div id="trace_table" style="display:none">
+
+              <label><br></label>
+              <table border="1" width="130%" id="table">
+                  <tr>
+                      <th>No.</th>
+                      <th>Time</th>
+                      <th>Source</th>
+                      <th>Destination</th>
+                      <th>Protocol</th>
+                      <th>Length</th>
+                  </tr>
+              </table>
+          </div>
+          <div class="chart-wrapper">
+                <div class="chart-title">
+
+                </div>
+                <div class="chart-stage">
+                    <div id="chart"></div>
+            </div>
+          </div>
+      </div>
+
+
+      <div id="con33333" style="border: inset; display:none">
+          <div align="left" style="width: 400px; float:left;">
+                <label style="color:navy; font-size: 17px; font-family: sans-serif;"> Protocols: <br> </label>
+                <input type="checkbox" name="protocol" id="HTTPS_protocol" value="HTTPS" onclick="changeProtocol()" checked> HTTPS <br>
+                <input type="checkbox" name="protocol" id="QUIC_protocol" value="QUIC" onclick="changeProtocol()" checked> QUIC <br>
+          </div>
+          <div align="left" style="float:left;">
+              <div>
+                    <label style="color:navy; font-size: 17px; font-family: sans-serif;"> Videos: <br> </label>
+              </div>
+              <div id="videos"></div>
+          </div>
+          <div>
+              <label style="color:navy; font-size: 17px; font-family: sans-serif;"> Group/UnGroup: <br> </label>
+                <input type="checkbox" name="protocol" id="Group_Data" value="Group_Data" onclick="groupData()"> Group Data<br>
+
+          </div>
+      </div>
+  </div>
+
+{% endblock %}

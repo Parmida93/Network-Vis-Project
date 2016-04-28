@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  {% block head %}
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>SPDY/QUIC vs. HTTPS</title>
+  <link rel="stylesheet" type="text/css" href="./static/lib/css/demo.css" />
+  <link rel="stylesheet" href="./static/lib/css/menu.css" type="text/css" media="screen" />
+
+  <link href="./static/lib/css/c3.css" rel="stylesheet" type="text/css">
+    <!--[if IE 6]>
+  <style>
+  body {behavior: url("csshover3.htc");}
+  #menu li .drop {background:url("img/drop.gif") no-repeat right 8px
+  </style>
+  <![endif]-->
+  <style type="text/css">
+    .bar {
+      fill: darkblue;
+    }
+
+    .bar:hover {
+      fill: brown;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+    }
+      table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+
+      th, td {
+          text-align: center;
+          <!--padding: 8px;-->
+      }
+
+      tr:nth-child(even){background-color: PowderBlue }
+
+      th {
+          background-color: #005580 ;
+          color: white;
+      }
+  </style>
+  <script type="text/javascript" src="./static/lib/js/jquery.min.js"></script>
+  {% endblock %}
+</head>
+	
+<body>
+  {% block menu %}
+  <div id="title">
+    <div id="title1">QUIC vs. HTTPS</div>
+  </div>
+  <div id="main1">
+    <ul id="menu2">
+      <li><a href="#" class="drop">Traces</a>
+        <div class="dropdown_1column align_left" style="z-index: 10;">
+          <div class="col_1">
+            <ul class="simple" id="trace_menu" onclick="showTrace()">
+              <li><a href="#">HTTPS/QUIC</a></li>
+              <!--<li><a href="#">QUIC</a></li>-->
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="menu_right"><a href="#" class="drop">Metrics</a>
+        <div class="dropdown_1column align_left" style="z-index: 10;">
+          <div class="col_1">
+            <ul class="simple" id="metric_type" onclick="changeMetric()">
+              <li><a href="#">Packet Size</a></li>
+              <li><a href="#">Payload Size</a></li>
+              <li><a href="#">Header Size</a></li>
+              <li><a href="#">Payload Time</a></li>
+              <li><a href="#">Packet Loss Rate</a></li>
+              <li><a href="#">Number of Retransmits</a></li>
+              <li><a href="#">Speedup</a></li>
+              <li><a href="#">Packet Number</a></li>
+            </ul>
+          </div>
+        </div>
+      </li>
+      <li class="menu_right"><a href="#" class="drop">Comparison</a>
+        <div class="dropdown_1column align_left" style="z-index: 10;">
+          <div class="col_1">
+            <ul class="simple" id="comp_type" onclick="changeComp()">
+              <li><a href="#">Average Packet Size</a></li>
+              <li><a href="#">Average Payload Size</a></li>
+              <li><a href="#">Average Header Size</a></li>
+              <li><a href="#">Average Payload Time</a></li>
+              <li><a href="#">Average Packet Loss Rate</a></li>
+              <li><a href="#">Average Number of Retransmits</a></li>
+              <li><a href="#">Average Speedup</a></li>
+              <li><a href="#">Average Number of Packets</a></li>
+            </ul>
+          </div>
+        </div>
+      </li>
+    </ul>
+  {% endblock %}
+
+    {% block content %}
+
+    {% endblock %}
+
+  <script src="./static/lib/js/jquery.min.js"></script>
+  <script src="./static/lib/js/bootstrap.min.js"></script>
+  <script src="./static/lib/js/crossfilter.js"></script>
+  <script src="./static/lib/js/d3.js"></script>
+  <script src="./static/lib/js/dc.js"></script>
+  <script src="./static/lib/js/queue.js"></script>
+  <script src="./static/lib/js/c3.min.js"></script>
+  <script src="./static/lib/js/keen.min.js"></script>
+
+  <script src='./static/js/graphs.js' type='text/javascript'></script>
+</div>
+</body>
+</html>

@@ -11,7 +11,6 @@ import json
 # from TextVisulization import compute_tfidf, readFiles
 # import TextVisulization
 import math
-from matplotlib.mathtext import MathtextBackend
 
 app = Flask(__name__)
 

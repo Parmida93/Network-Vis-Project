@@ -51,6 +51,9 @@ def metrics_render():
         result = read_file_type2(type_name, file_name)
     elif type_name == "HTTPS/QUIC":
         result = read_file_type3(type_name, file_name)
+    elif type_name == "Parallel Coordinates":
+        result1 = read_file_type3(type_name, file_name)
+        result = sampleData(result1, sampling_type,samplingNo)
     return json.dumps({'all_packets': result})
 
 

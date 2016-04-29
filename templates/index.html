@@ -5,7 +5,7 @@
     <div class="mask"></div>
   <div id="cont">
       <div id="con33"></div>
-      <div id="con333" style="border: inset; height:70px; display:none">
+      <div id="con333" style="border: inset; height:100px; display:none">
           <div align="left" style="width: 400px; float:left;">
               <label style="color:navy; font-size: 17px; font-family: sans-serif;">Trace File:</label>
                 <select id="trace_file_name" onchange="changeTraceFile()" style="display:none">
@@ -25,6 +25,11 @@
               <select id="sampling_type" onchange="changeTraceFile()">
                     <option selected>Binning</option>
                     <option>Random Sampling</option>
+                    <option>Adaptive Sampling</option>
+                    <option>Reservoir Sampling</option>
+              </select>
+              <select id="sampling_type2" onchange="changeTraceFile()">
+                    <option selected>Random Sampling</option>
                     <option>Adaptive Sampling</option>
                     <option>Reservoir Sampling</option>
               </select>
@@ -50,19 +55,20 @@
                   </tr>
               </table>
           </div>
-          <div align="center" id="loader" style="display:none">
+          <div class="loader" align="center" id="loader" style="float:left; display:none">
               <!--<img id="radio" align="center" src="{{ url_for('static',filename='images/radio.gif') }}">-->
-              <!--<div style="background:url({{ url_for('static',filename='images/radio.gif') }}) no-repeat center center;width:100px;height:100px;"></div>-->
           </div>
+
+          <div class="parcoords" id="parcood_chart" align="left" style="float:left; width:900px;height:400px"></div>
 
           <div class="chart-wrapper">
-                <div class="chart-title">
-
-                </div>
-                <div class="chart-stage">
-                    <div id="chart"></div>
-            </div>
+              <div class="chart-stage">
+          <!--<div class="chart-title">-->
+                  <div id="chart"></div>
+              </div>
           </div>
+                <!-- -->
+          <!--</div>-->
       </div>
 
 

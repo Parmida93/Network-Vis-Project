@@ -35,6 +35,41 @@ function changeMetric(event){
     else
         sampling_div.style.display = "none";
 
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
+
+    changeTraceFile();
+}
+
+function changeParallelCoord(event){
+    event = event || window.event;
+    var source = event.target || event.srcElement;
+    type_name = source.innerHTML;
+
+    var table = document.getElementById("trace_table");
+    table.style.display = "none";
+
+    var chart_div = document.getElementById("chart");
+    chart_div.style.display = "none";
+
+    var chart_div2 = document.getElementById("parcood_chart");
+    chart_div2.style.display = "block";
+
+    var chartTitle = document.getElementById("con33");
+    chartTitle.innerHTML = "Parallel Coordinate";
+
+    var trace_file = document.getElementById("trace_file_name");
+    trace_file.style.display = "block";
+
+    var options = document.getElementById("con33333");
+    options.style.display = "none";
+
+    var sampling_div = document.getElementById("sampling_div")
+        sampling_div.style.display = "block";
+
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
+
     changeTraceFile();
 }
 
@@ -42,12 +77,27 @@ function changeTraceFile(){
     var video_options = document.getElementById("con333");
     video_options.style.display = "block";
 
-
     var trace_file = document.getElementById("trace_file_name");
     var trace_file_selected = trace_file.value;
 
     var sampling_type_element = document.getElementById("sampling_type");
-    var sampling_type = sampling_type_element.value;
+    var chart1 = document.getElementById("chart");
+    var chart2 = document.getElementById("parcood_chart");
+    var sampling_type2_element = document.getElementById("sampling_type2");
+    if(type_name == "Parallel Coordinates"){
+        var sampling_type = sampling_type2_element.value;
+        sampling_type_element.style.display = "none";
+        sampling_type2_element.style.display = "block";
+        chart1.style.display = "none";
+        chart2.style.display = "block";
+    }
+    else{
+        var sampling_type = sampling_type_element.value;
+        sampling_type2_element.style.display = "none";
+        sampling_type_element.style.display = "block";
+        chart1.style.display = "block";
+        chart2.style.display = "none";
+    }
 
     var sampling_no_element = document.getElementById("samplingNo");
     var samplingNo = sampling_no_element.value;
@@ -55,14 +105,9 @@ function changeTraceFile(){
     if(type_name == "HTTPS/QUIC"){
         var trace_table = document.getElementById("table");
         trace_table.style.display = "none";
-//        var radio = document.getElementById("radio");
-//        temp = radio.src;
-//        radio.src ="none";
-//        radio.src=temp;
         var loader = document.getElementById("loader");
         loader.style.display = "block";
     }
-
 
 
 	$.ajax({
@@ -82,7 +127,9 @@ function changeTraceFile(){
 		    else if (type_name == "Packet Loss Rate")
 		        drawDonutChart(parsed['all_packets']);
 		    else if (type_name == "HTTPS/QUIC")
-		        makeTraceTable(parsed['all_packets'])
+		        makeTraceTable(parsed['all_packets']);
+		    else if (type_name == "Parallel Coordinates")
+		        drawParallelCoordinates(parsed['all_packets']);
 //		    drawScatterPlot(parsed['vis_results'], parsed['sampled_labels'])
 		}
 	});
@@ -100,6 +147,10 @@ function changeComp(event){
     var chart_div = document.getElementById("chart");
     chart_div.style.display = "block";
 
+    var chart_div2 = document.getElementById("parcood_chart");
+    chart_div2.style.display = "none";
+
+
     var chartTitle = document.getElementById("con33");
     chartTitle.innerHTML = type_name + " Graph";
 
@@ -111,6 +162,9 @@ function changeComp(event){
 
     var options = document.getElementById("con33333");
     options.style.display = "block";
+
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
 
     $.ajax({
 		type: 'POST',
@@ -463,6 +517,7 @@ function groupData(){
 function drawDonutChart(data){
 
     var chart = c3.generate({
+    bindto:"#chart",
     data: {
         columns: [
             ['Packets Loss', data[0]],
@@ -478,6 +533,76 @@ function drawDonutChart(data){
     }
 });
 }
+
+
+
+function drawParallelCoordinates(packets){
+    var dataset = [];
+    for(i = 0; i < packets.length; i++){
+        var packet = packets[i].split(" ");
+        obj = {'PacketNo':+packet[0], 'Time':+packet[1], 'Source':packet[2], 'Destination':packet[3], 'Protocol':packet[4], 'Length':packet[5]};
+        dataset[i] = obj;
+    }
+    console.log(dataset)
+
+    // linear color scale
+    var blue_to_brown = d3.scale.linear()
+      .domain([9, 50])
+      .range(["steelblue", "brown"])
+      .interpolate(d3.interpolateLab);
+
+    // interact with this variable from a javascript console
+    var pc1;
+
+    // load csv file and create the chart
+      pc1 = d3.parcoords()("#parcood_chart")
+        .data(dataset)
+//        .hideAxis(["name"])
+        .composite("darken")
+        .color(function(d) { return blue_to_brown(d.PacketNo / 70); })  // quantitative color scale
+        .alpha(0.35)
+        .render()
+        .brushMode("1D-axes")  // enable brushing
+        .interactive()  // command line mode
+
+      var explore_count = 0;
+      var exploring = {};
+      var explore_start = false;
+      pc1.svg
+        .selectAll(".dimension")
+        .style("cursor", "pointer")
+        .on("click", function(d) {
+          exploring[d] = d in exploring ? false : true;
+          event.preventDefault();
+          if (exploring[d]) d3.timer(explore(d,explore_count));
+        });
+
+      function explore(dimension,count) {
+        if (!explore_start) {
+          explore_start = true;
+          d3.timer(pc1.brush);
+        }
+        var speed = (Math.round(Math.random()) ? 1 : -1) * (Math.random()+0.5);
+        return function(t) {
+          if (!exploring[dimension]) return true;
+          var domain = pc1.yscale[dimension].domain();
+          var width = (domain[1] - domain[0])/4;
+
+          var center = width*1.5*(1+Math.sin(speed*t/1200)) + domain[0];
+
+          pc1.yscale[dimension].brush.extent([
+            d3.max([center-width*0.01, domain[0]-width/400]),
+            d3.min([center+width*1.01, domain[1]+width/100])
+          ])(pc1.g()
+              .filter(function(d) {
+                return d == dimension;
+              })
+          );
+        };
+      };
+
+    };
+
 
 function drawLineChart(data){
 

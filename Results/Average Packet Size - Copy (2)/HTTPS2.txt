@@ -1,4 +1,0 @@
-Average TCP Payload Length: 938.7534824436284
-Average UDP Payload Length: 106.94736842105263
-Average TCP Length: 959.1128038602774
-Average UDP Length: 114.94736842105263

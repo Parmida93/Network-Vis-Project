@@ -13,7 +13,7 @@ import json
 import math
 from flask import make_response
 from Sampling import binning, random_sampling, reservoir_sampling
-
+import csv
 app = Flask(__name__)
 
 MONGODB_HOST = 'localhost'
@@ -43,7 +43,7 @@ def metrics_render():
     sampling_type = request.form['sampling_type']
     samplingNo = request.form['samplingNo']
     result, result2, result3, x = [], [], [], []
-    if type_name == "Packet Size" or type_name == "Payload Size":
+    if type_name == "Packet Size" or type_name == "Payload Size" or type_name == "Header Size":
         result1 = read_file_type1(type_name, file_name)
         result = sampleData(result1, sampling_type, samplingNo)
     elif type_name == "Packet Loss Rate":
@@ -71,17 +71,23 @@ def sampleData(data, sampling_type, samplingNum):
 
 def read_file_type1(type_name, file_name):
     array_result = []
-    file_path = './Results/' + type_name + '/' + file_name + '.txt'
-    f = open(file_path, 'r')
-    for line in f:
-        array_result.append(float(line))
-    f.close()
+    # file_path = './Results/' + type_name + '/' + file_name + '.txt'
+    # f = open(file_path, 'r')
+    # for line in f:
+    #     array_result.append(float(line))
+    # f.close()
+    file_path = './Results/CSVs/' + file_name + '.csv'
+    with open(file_path) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            array_result.append(row[type_name])
+
     return array_result
 
 
 def read_file_type2(type_name, file_name):
     array_result = []
-    file_path = './Results/' + type_name + '/' + file_name + '.txt'
+    file_path = './Results/' + file_name + '.csv'
     f = open(file_path, 'r')
     for line in f:
         array_result.append(line)
@@ -128,19 +134,25 @@ def compare_render():
 
 
 def read_file_comp1(type_name):
-    path = './Results/' + type_name
+    path = './Results/CSVs/'
     dirs = os.listdir( path )
     quic_results = ['QUIC']
     https_results = ['HTTPS']
+    # with open(file_path) as csvfile:
+    #     reader = csv.DictReader(csvfile)
+    #     for row in reader:
+    #         array_result.append(row[type_name])
     for file in dirs:
         array_result = []
-        f = open((path + "/" + file), 'r')
-        print f
-        for line in f:
+        # f = open((path + "/" + file), 'r')
+        with open(path + file) as csvfile:
+            reader = csv.DictReader(csvfile)
+            # print f
+            row = reader.next()
             if "QUIC" in file:
-                quic_results.append(round(float(line),2))
+                quic_results.append(round(float(row[type_name]),2))
             elif "HTTPS" in file:
-                https_results.append(round(float(line),2))
+                https_results.append(round(float(row[type_name]),2))
     return quic_results, https_results
 
 

@@ -122,7 +122,7 @@ function changeTraceFile(){
 		success: function(msg){
 		    var parsed = JSON.parse(msg)
             d3.select("svg").remove();
-            if (type_name == "Packet Size" || type_name == "Payload Size")
+            if (type_name == "Packet Size" || type_name == "Payload Size" || type_name == "Header Size")
 		        drawBarChart(parsed['all_packets']);
 //		        drawLineChart(parsed['all_packets']);
 		    else if (type_name == "Packet Loss Rate")

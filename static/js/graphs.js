@@ -6,15 +6,8 @@ var quic_data;
 var https_data;
 var deleted = [];
 
-$(document).ready(function(){
-//console.log("dallam")
-    $( document ).ajaxStart(function() {
-    $('.mask').addClass('ajax');
-    });
-    $( document ).ajaxComplete(function() {
-    $('.mask').removeClass('ajax');
-    });
-})
+
+//$(document).ready(function() { $("#loader").append("<img src='./static/images/radio.gif') }}"+ Math.random() + "'/>"); })
 
 function changeMetric(event){
     event = event || window.event;
@@ -42,6 +35,41 @@ function changeMetric(event){
     else
         sampling_div.style.display = "none";
 
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
+
+    changeTraceFile();
+}
+
+function changeParallelCoord(event){
+    event = event || window.event;
+    var source = event.target || event.srcElement;
+    type_name = source.innerHTML;
+
+    var table = document.getElementById("trace_table");
+    table.style.display = "none";
+
+    var chart_div = document.getElementById("chart");
+    chart_div.style.display = "none";
+
+    var chart_div2 = document.getElementById("parcood_chart");
+    chart_div2.style.display = "block";
+
+    var chartTitle = document.getElementById("con33");
+    chartTitle.innerHTML = "Parallel Coordinate";
+
+    var trace_file = document.getElementById("trace_file_name");
+    trace_file.style.display = "block";
+
+    var options = document.getElementById("con33333");
+    options.style.display = "none";
+
+    var sampling_div = document.getElementById("sampling_div")
+    sampling_div.style.display = "block";
+
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
+
     changeTraceFile();
 }
 
@@ -49,12 +77,27 @@ function changeTraceFile(){
     var video_options = document.getElementById("con333");
     video_options.style.display = "block";
 
-
     var trace_file = document.getElementById("trace_file_name");
     var trace_file_selected = trace_file.value;
 
     var sampling_type_element = document.getElementById("sampling_type");
-    var sampling_type = sampling_type_element.value;
+    var chart1 = document.getElementById("chart");
+    var chart2 = document.getElementById("parcood_chart");
+    var sampling_type2_element = document.getElementById("sampling_type2");
+    if(type_name == "Parallel Coordinates"){
+        var sampling_type = sampling_type2_element.value;
+        sampling_type_element.style.display = "none";
+        sampling_type2_element.style.display = "block";
+        chart1.style.display = "none";
+        chart2.style.display = "block";
+    }
+    else{
+        var sampling_type = sampling_type_element.value;
+        sampling_type2_element.style.display = "none";
+        sampling_type_element.style.display = "block";
+        chart1.style.display = "block";
+        chart2.style.display = "none";
+    }
 
     var sampling_no_element = document.getElementById("samplingNo");
     var samplingNo = sampling_no_element.value;
@@ -65,7 +108,6 @@ function changeTraceFile(){
         var loader = document.getElementById("loader");
         loader.style.display = "block";
     }
-
 
 
 	$.ajax({
@@ -82,10 +124,13 @@ function changeTraceFile(){
             d3.select("svg").remove();
             if (type_name == "Packet Size" || type_name == "Payload Size")
 		        drawBarChart(parsed['all_packets']);
+//		        drawLineChart(parsed['all_packets']);
 		    else if (type_name == "Packet Loss Rate")
 		        drawDonutChart(parsed['all_packets']);
 		    else if (type_name == "HTTPS/QUIC")
-		        makeTraceTable(parsed['all_packets'])
+		        makeTraceTable(parsed['all_packets']);
+		    else if (type_name == "Parallel Coordinates")
+		        drawParallelCoordinates(parsed['all_packets']);
 //		    drawScatterPlot(parsed['vis_results'], parsed['sampled_labels'])
 		}
 	});
@@ -103,6 +148,10 @@ function changeComp(event){
     var chart_div = document.getElementById("chart");
     chart_div.style.display = "block";
 
+    var chart_div2 = document.getElementById("parcood_chart");
+    chart_div2.style.display = "none";
+
+
     var chartTitle = document.getElementById("con33");
     chartTitle.innerHTML = type_name + " Graph";
 
@@ -114,6 +163,9 @@ function changeComp(event){
 
     var options = document.getElementById("con33333");
     options.style.display = "block";
+
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
 
     $.ajax({
 		type: 'POST',
@@ -450,6 +502,27 @@ function drawComparisonBarChart(){
 //    chart.resize({height:500, width:800});
 }
 
+function drawObjectNumberComparisonBarChart(){
+
+    chart = c3.generate({
+        bindto: '#chart',
+        data: {
+            columns: [
+                original_https_data,
+                original_quic_data
+            ],
+            type: 'bar'
+        },
+        bar: {
+            width: {
+                ratio: 0.5 // this makes bar width 50% of length between ticks
+            }
+        }
+    });
+
+//    chart.resize({height:500, width:800});
+}
+
 function groupData(){
 
     var groupDataButton = document.getElementById("Group_Data");
@@ -466,6 +539,7 @@ function groupData(){
 function drawDonutChart(data){
 
     var chart = c3.generate({
+    bindto:"#chart",
     data: {
         columns: [
             ['Packets Loss', data[0]],
@@ -482,63 +556,89 @@ function drawDonutChart(data){
 });
 }
 
-function drawLineChart(data){
 
-    d3.select("svg").remove();
-    var margin = {top: 30, right: 20, bottom: 30, left: 50},
-    width = 800 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
 
-    var dataset = []
-    for(i = 0; i < data.length; i++){
-        obj = {'attr':i+1, 'amount':data[i]}
-        dataset[i] = obj
+function drawParallelCoordinates(packets){
+    var dataset = [];
+    for(i = 0; i < packets.length; i++){
+        var packet = packets[i].split(" ");
+        obj = {'PacketNo':+packet[0], 'Time':+packet[1], 'Source':packet[2], 'Destination':packet[3], 'Protocol':packet[4], 'Length':packet[5]};
+        dataset[i] = obj;
     }
-    var x = d3.scale.linear().range([0, width]);
-    var y = d3.scale.linear().range([height - 30, 30]);
+    console.log(dataset)
 
-    // Define the axes
-    var xAxis = d3.svg.axis().scale(x)
-        .orient("bottom").ticks(1000);
+    // linear color scale
+    var blue_to_brown = d3.scale.linear()
+      .domain([9, 50])
+      .range(["steelblue", "brown"])
+      .interpolate(d3.interpolateLab);
 
-    var yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(10);
+    // interact with this variable from a javascript console
+    var pc1;
 
-    // Define the line
-    var valueline = d3.svg.line()
-        .x(function(d) { return x(d.attr); })
-        .y(function(d) { return y(d.amount); })
-        .interpolate("basis");
+    // load csv file and create the chart
+      pc1 = d3.parcoords()("#parcood_chart")
+        .data(dataset)
+//        .hideAxis(["name"])
+        .composite("darken")
+        .color(function(d) { return blue_to_brown(d.PacketNo / 70); })  // quantitative color scale
+        .alpha(0.35)
+        .render()
+        .brushMode("1D-axes")  // enable brushing
+        .interactive()  // command line mode
 
-    // Adds the svg canvas
-    var svg = d3.select("#chart")
-        .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-            .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
+      var explore_count = 0;
+      var exploring = {};
+      var explore_start = false;
+      pc1.svg
+        .selectAll(".dimension")
+        .style("cursor", "pointer")
+        .on("click", function(d) {
+          exploring[d] = d in exploring ? false : true;
+          event.preventDefault();
+          if (exploring[d]) d3.timer(explore(d,explore_count));
+        });
+
+      function explore(dimension,count) {
+        if (!explore_start) {
+          explore_start = true;
+          d3.timer(pc1.brush);
+        }
+        var speed = (Math.round(Math.random()) ? 1 : -1) * (Math.random()+0.5);
+        return function(t) {
+          if (!exploring[dimension]) return true;
+          var domain = pc1.yscale[dimension].domain();
+          var width = (domain[1] - domain[0])/4;
+
+          var center = width*1.5*(1+Math.sin(speed*t/1200)) + domain[0];
+
+          pc1.yscale[dimension].brush.extent([
+            d3.max([center-width*0.01, domain[0]-width/400]),
+            d3.min([center+width*1.01, domain[1]+width/100])
+          ])(pc1.g()
+              .filter(function(d) {
+                return d == dimension;
+              })
+          );
+        };
+      };
+
+    };
 
 
-        // Scale the range of the data
-        x.domain(d3.extent(dataset, function(d) { return +d.attr; }));
-        y.domain(d3.extent(dataset, function(d) { return +d.amount; }));
-
-        // Add the valueline path.
-        svg.append("path")
-            .attr("class", "line")
-            .attr("d", valueline(dataset));
-
-        // Add the X Axis
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        // Add the Y Axis
-        svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
+function drawLineChart(data){
+    dataset = ['data1']
+    for(i = 0; i < data.length; i++){
+        dataset[i+1] = data[i];
+    }
+    var chart = c3.generate({
+        bindto: "#chart",
+        data: {
+            columns: [
+                dataset,
+            ]
+        }
+    });
 };
 
 function drawScatterPlot(xy_data, labels){

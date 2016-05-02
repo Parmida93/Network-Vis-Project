@@ -65,7 +65,7 @@ function changeParallelCoord(event){
     options.style.display = "none";
 
     var sampling_div = document.getElementById("sampling_div")
-        sampling_div.style.display = "block";
+    sampling_div.style.display = "block";
 
     var loader = document.getElementById("loader");
     loader.style.display = "none";
@@ -124,6 +124,7 @@ function changeTraceFile(){
             d3.select("svg").remove();
             if (type_name == "Packet Size" || type_name == "Payload Size")
 		        drawBarChart(parsed['all_packets']);
+//		        drawLineChart(parsed['all_packets']);
 		    else if (type_name == "Packet Loss Rate")
 		        drawDonutChart(parsed['all_packets']);
 		    else if (type_name == "HTTPS/QUIC")
@@ -501,6 +502,27 @@ function drawComparisonBarChart(){
 //    chart.resize({height:500, width:800});
 }
 
+function drawObjectNumberComparisonBarChart(){
+
+    chart = c3.generate({
+        bindto: '#chart',
+        data: {
+            columns: [
+                original_https_data,
+                original_quic_data
+            ],
+            type: 'bar'
+        },
+        bar: {
+            width: {
+                ratio: 0.5 // this makes bar width 50% of length between ticks
+            }
+        }
+    });
+
+//    chart.resize({height:500, width:800});
+}
+
 function groupData(){
 
     var groupDataButton = document.getElementById("Group_Data");
@@ -605,62 +627,18 @@ function drawParallelCoordinates(packets){
 
 
 function drawLineChart(data){
-
-    d3.select("svg").remove();
-    var margin = {top: 30, right: 20, bottom: 30, left: 50},
-    width = 800 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-    var dataset = []
+    dataset = ['data1']
     for(i = 0; i < data.length; i++){
-        obj = {'attr':i+1, 'amount':data[i]}
-        dataset[i] = obj
+        dataset[i+1] = data[i];
     }
-    var x = d3.scale.linear().range([0, width]);
-    var y = d3.scale.linear().range([height - 30, 30]);
-
-    // Define the axes
-    var xAxis = d3.svg.axis().scale(x)
-        .orient("bottom").ticks(1000);
-
-    var yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(10);
-
-    // Define the line
-    var valueline = d3.svg.line()
-        .x(function(d) { return x(d.attr); })
-        .y(function(d) { return y(d.amount); })
-        .interpolate("basis");
-
-    // Adds the svg canvas
-    var svg = d3.select("#chart")
-        .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-            .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
-
-
-        // Scale the range of the data
-        x.domain(d3.extent(dataset, function(d) { return +d.attr; }));
-        y.domain(d3.extent(dataset, function(d) { return +d.amount; }));
-
-        // Add the valueline path.
-        svg.append("path")
-            .attr("class", "line")
-            .attr("d", valueline(dataset));
-
-        // Add the X Axis
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        // Add the Y Axis
-        svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
+    var chart = c3.generate({
+        bindto: "#chart",
+        data: {
+            columns: [
+                dataset,
+            ]
+        }
+    });
 };
 
 function drawScatterPlot(xy_data, labels){

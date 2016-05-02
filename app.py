@@ -43,7 +43,7 @@ def metrics_render():
     file_name = request.form['trace_file']
     sampling_type = request.form['sampling_type']
     samplingNo = request.form['samplingNo']
-    result = []
+    result, result2, result3, x = [], [], [], []
     if type_name == "Packet Size" or type_name == "Payload Size":
         result1 = read_file_type1(type_name, file_name)
         result = sampleData(result1, sampling_type, samplingNo)
@@ -54,7 +54,9 @@ def metrics_render():
     elif type_name == "Parallel Coordinates":
         result1 = read_file_type3(type_name, file_name)
         result = sampleData(result1, sampling_type,samplingNo)
-    return json.dumps({'all_packets': result})
+    elif type_name == "Object Number Through Time":
+        result2, result3, x = read_file_type4(type_name, file_name)
+    return json.dumps({'all_packets': result, 'QUIC_Packets': result2, 'HTTPS_Packets': result3, 'x': x})
 
 
 def sampleData(data, sampling_type, samplingNum):
@@ -101,6 +103,22 @@ def read_file_type3(type_name, file_name):
     for line in f:
         array_result.append(line)
     return array_result
+
+
+def read_file_type4(type_name, file_name):
+    file_path_HTTPS = './Results/' + type_name + '/' + file_name + '_HTTPS.txt'
+    file_path_QUIC = './Results/' + type_name + '/' + file_name + '_QUIC.txt'
+    f_HTTPS = open(file_path_HTTPS, 'r')
+    f_QUIC = open(file_path_QUIC, 'r')
+    x_array = f_QUIC.readline().split(" ")
+    array_result_QUIC = f_QUIC.readline().split(" ")
+    line = f_HTTPS.readline().split(" ")
+    if len(line) < len(x_array):
+        x_array = line
+    array_result_HTTPS = f_HTTPS.readline().split(" ")
+    f_HTTPS.close()
+    f_QUIC.close()
+    return array_result_QUIC, array_result_HTTPS, x_array
 
 
 @app.route("/compare", methods=['POST'])

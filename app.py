@@ -113,7 +113,7 @@ def read_file_type4(type_name, file_name):
     x_array = f_QUIC.readline().split(" ")
     array_result_QUIC = f_QUIC.readline().split(" ")
     line = f_HTTPS.readline().split(" ")
-    if len(line) < len(x_array):
+    if len(line) > len(x_array):
         x_array = line
     array_result_HTTPS = f_HTTPS.readline().split(" ")
     f_HTTPS.close()

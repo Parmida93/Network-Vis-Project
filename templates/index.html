@@ -6,7 +6,7 @@
   <div id="cont">
       <div id="con33"></div>
       <div id="con333" style="border: inset; height:100px; display:none">
-          <div align="left" style="width: 400px; float:left;">
+          <div id="file_div" align="left" style="width: 400px; float:left;">
               <label style="color:navy; font-size: 17px; font-family: sans-serif;">Trace File:</label>
                 <select id="trace_file_name" onchange="changeTraceFile()" style="display:none">
                     <option selected>Video1_HTTPS</option>
@@ -17,6 +17,15 @@
                     <option>Video3_QUIC</option>
                     <option>Video4_HTTPS</option>
                     <option>Video4_QUIC</option>
+                </select>
+          </div>
+          <div id="video_div" align="left" style="width: 400px; float:left;">
+              <label style="color:navy; font-size: 17px; font-family: sans-serif;">Video File:</label>
+                <select id="video_file_name" onchange="changeTraceFile()" style="display:block">
+                    <option selected>Video1</option>
+                    <option>Video2</option>
+                    <option>Video3</option>
+                    <option>Video4</option>
                 </select>
           </div>
 

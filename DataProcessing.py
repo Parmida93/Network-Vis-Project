@@ -8,7 +8,7 @@ def read_traces():
         f = open((path + "/" + file), 'r')
         f2 = open("./Results/Object Number Through Time/" + file, 'w')
         counter = 0
-        str1 = 'x'
+        str1 = ''
         if 'QUIC' in file:
             str2 = 'QUIC'
         else:
@@ -18,10 +18,10 @@ def read_traces():
             splitted = line.split(" ")
             if ('QUIC' in file and splitted[4] == 'UDP') or ('HTTPS' in file and splitted[4] == 'TCP'):
                 counter += 1
-                if counter != 0 and ((counter & (counter - 1)) == 0):
+                if counter != 1 and counter != 0 and ((counter & (counter - 1)) == 0):
                     str1 += " {0}".format(counter)
                     str2 += " {0}".format(splitted[1])
-        out_str = "{0}\n{1}".format(str1, str2)
+        out_str = "{0}\n{1}".format(str1.strip(), str2)
         print out_str
         f2.write(out_str)
 
@@ -35,5 +35,5 @@ def test():
     f2.close()
 
 if __name__ == "__main__":
-    # read_traces()
-    test()
+    read_traces()
+    # test()

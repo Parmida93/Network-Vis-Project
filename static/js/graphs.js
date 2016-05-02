@@ -77,8 +77,6 @@ function changeTraceFile(){
     var video_options = document.getElementById("con333");
     video_options.style.display = "block";
 
-    var trace_file = document.getElementById("trace_file_name");
-    var trace_file_selected = trace_file.value;
 
     var sampling_type_element = document.getElementById("sampling_type");
     var chart1 = document.getElementById("chart");
@@ -110,6 +108,24 @@ function changeTraceFile(){
     }
 
 
+    var trace_file = document.getElementById("trace_file_name");
+    var trace_file_selected = trace_file.value;
+
+    var trace_file_div = document.getElementById("file_div");
+    var video_file_div = document.getElementById("video_div");
+    if (type_name == "Object Number Through Time"){
+        trace_file_div.style.display = "none";
+        video_file_div.style.display = "block";
+
+        var video_file = document.getElementById("video_file_name");
+        trace_file_selected = video_file.value;
+    }
+    else{
+        trace_file_div.style.display = "block";
+        video_file_div.style.display = "none";
+    }
+
+
 	$.ajax({
 		type: 'POST',
 		url: '/metrics',
@@ -131,6 +147,9 @@ function changeTraceFile(){
 		        makeTraceTable(parsed['all_packets']);
 		    else if (type_name == "Parallel Coordinates")
 		        drawParallelCoordinates(parsed['all_packets']);
+		    else if (type_name == "Object Number Through Time"){
+		        drawObjectNumberComparisonBarChart(parsed['QUIC_Packets'], parsed['HTTPS_Packets'], parsed['x'])
+		    }
 //		    drawScatterPlot(parsed['vis_results'], parsed['sampled_labels'])
 		}
 	});
@@ -502,16 +521,30 @@ function drawComparisonBarChart(){
 //    chart.resize({height:500, width:800});
 }
 
-function drawObjectNumberComparisonBarChart(){
-
+function drawObjectNumberComparisonBarChart(quic_array, https_array, x_array){
+//    alert(x_array)
     chart = c3.generate({
         bindto: '#chart',
         data: {
+//            x : 'x',
             columns: [
-                original_https_data,
-                original_quic_data
+//                x_array,
+                quic_array,
+                https_array
             ],
             type: 'bar'
+        },
+        axis: {
+            x: {
+                type: 'category',
+//            tick: '1',
+//                categories: ['1' , '2', '4', '8', '16' , '32' , '64' , '128' , '256' , '512', '10128']
+                categories: x_array,
+                label: 'Object Number'
+            },
+            y: {
+                label: 'Time (seconds)'
+            }
         },
         bar: {
             width: {

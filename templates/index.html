@@ -9,13 +9,17 @@
           <div id="file_div" align="left" style="width: 400px; float:left;">
               <label style="color:navy; font-size: 17px; font-family: sans-serif;">Trace File:</label>
                 <select id="trace_file_name" onchange="changeTraceFile()" style="display:none">
-                    <option selected>Video1_HTTPS</option>
+                    <option selected>Video1_HTTP1.1</option>
+                    <option>Video1_HTTP2.0</option>
                     <option>Video1_QUIC</option>
-                    <option>Video2_HTTPS</option>
+                    <option>Video2_HTTP1.1</option>
+                    <option>Video2_HTTP2.0</option>
                     <option>Video2_QUIC</option>
-                    <option>Video3_HTTPS</option>
+                    <option>Video3_HTTP1.1</option>
+                    <option>Video3_HTTP2.0</option>
                     <option>Video3_QUIC</option>
-                    <option>Video4_HTTPS</option>
+                    <option>Video4_HTTP1.1</option>
+                    <option>Video4_HTTP2.0</option>
                     <option>Video4_QUIC</option>
                 </select>
           </div>
@@ -70,10 +74,34 @@
 
           <div class="parcoords" id="parcood_chart" align="left" style="float:left; width:900px;height:400px"></div>
 
-          <div class="chart-wrapper">
+          <div class="chart-wrapper" id="chart-wrapper">
               <div class="chart-stage">
           <!--<div class="chart-title">-->
                   <div id="chart"></div>
+
+                  <div id="all_charts" style="display:none;">
+                      <!--<label id="chart1_label" style="height: 300px; width: 400px">Packet Size</label>-->
+                      <!--<div style="float: left;">-->
+                          <!--<div class="chart-title" id="chart1_label" style="height: 40px; width: 400px; font-size:200%; color:#2471A3;"><font face="Times New Roman">Average Packet Size</font></div>-->
+                          <!--<div id="chart1" style="height: 300px; width: 400px"></div>-->
+                      <!--</div>-->
+                      <div class="header_and_chart">
+                          <div class="chart_headers" id="chart2_label"><font face="Times New Roman">Average Payload Size</font></div>
+                          <div class="multiple_charts" id="chart2"></div>
+                      </div>
+                      <div class="header_and_chart">
+                          <div class="chart_headers" id="chart3_label"><font face="Times New Roman">Average Header Size</font></div>
+                          <div class="multiple_charts" id="chart3"></div>
+                      </div>
+                      <div class="header_and_chart">
+                          <div class="chart_headers" id="chart4_label"><font face="Times New Roman">Packet Number</font></div>
+                          <div class="multiple_charts" id="chart4"></div>
+                      </div>
+                      <div class="header_and_chart">
+                          <div class="chart_headers" id="chart5_label"><font face="Times New Roman">Throughput</font></div>
+                          <div class="multiple_charts" id="chart5"></div>
+                      </div>
+                  </div>
               </div>
           </div>
                 <!-- -->
@@ -84,7 +112,8 @@
       <div id="con33333" style="height:100px; border: inset; display:none">
           <div align="left" style="width: 400px; float:left;">
                 <label style="color:navy; font-size: 17px; font-family: sans-serif;"> Protocols: <br> </label>
-                <input type="checkbox" name="protocol" id="HTTPS_protocol" value="HTTPS" onclick="changeProtocol()" checked> HTTPS <br>
+                <input type="checkbox" name="protocol" id="HTTP1.1_protocol" value="HTTP1.1" onclick="changeProtocol()" checked> HTTP1.1 <br>
+                <input type="checkbox" name="protocol" id="HTTP2.0_protocol" value="HTTP2.0" onclick="changeProtocol()" checked> HTTP2.0 <br>
                 <input type="checkbox" name="protocol" id="QUIC_protocol" value="QUIC" onclick="changeProtocol()" checked> QUIC <br>
           </div>
           <div align="left" style="float:left;">
@@ -96,6 +125,7 @@
           <div>
               <label style="color:navy; font-size: 17px; font-family: sans-serif;"> Group/UnGroup: <br> </label>
                 <input type="checkbox" name="protocol" id="Group_Data" value="Group_Data" onclick="groupData()"> Group Data<br>
+                <input type="checkbox" name="protocol" id="Total_Average" value="Group_Data" onclick="averageTotal()"> Total Average<br>
 
           </div>
       </div>

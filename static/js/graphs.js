@@ -1,9 +1,11 @@
 var type_name = "Packet Size";
 var chart;
 var original_quic_data;
-var original_https_data;
+var original_HTTP2_data;
+var original_HTTP1_data;
 var quic_data;
-var https_data;
+var HTTP2_data;
+var HTTP1_data;
 var deleted = [];
 
 
@@ -28,6 +30,9 @@ function changeMetric(event){
 
     var options = document.getElementById("con33333");
     options.style.display = "none";
+
+    var all_charts_div = document.getElementById("all_charts");
+    all_charts_div.style.display = "none";
 
     var sampling_div = document.getElementById("sampling_div")
     if(type_name == "Packet Size" || type_name == "Payload Size")
@@ -79,7 +84,7 @@ function changeTraceFile(){
 
 
     var sampling_type_element = document.getElementById("sampling_type");
-    var chart1 = document.getElementById("chart");
+    var chart1 = document.getElementById("chart-wrapper");
     var chart2 = document.getElementById("parcood_chart");
     var sampling_type2_element = document.getElementById("sampling_type2");
     if(type_name == "Parallel Coordinates"){
@@ -100,7 +105,7 @@ function changeTraceFile(){
     var sampling_no_element = document.getElementById("samplingNo");
     var samplingNo = sampling_no_element.value;
 
-    if(type_name == "HTTPS/QUIC"){
+    if(type_name == "Trace Table"){
         var trace_table = document.getElementById("table");
         trace_table.style.display = "none";
         var loader = document.getElementById("loader");
@@ -143,13 +148,14 @@ function changeTraceFile(){
 //		        drawLineChart(parsed['all_packets']);
 		    else if (type_name == "Packet Loss Rate")
 		        drawDonutChart(parsed['all_packets']);
-		    else if (type_name == "HTTPS/QUIC")
+		    else if (type_name == "Trace Table")
 		        makeTraceTable(parsed['all_packets']);
 		    else if (type_name == "Parallel Coordinates")
 		        drawParallelCoordinates(parsed['all_packets']);
-		    else if (type_name == "Object Number Through Time"){
-		        drawObjectNumberComparisonBarChart(parsed['QUIC_Packets'], parsed['HTTPS_Packets'], parsed['x'])
-		    }
+		    else if (type_name == "Object Number Through Time")
+		        drawObjectNumberComparisonBarChart(parsed['HTTP1.1_Packets'], parsed['QUIC_Packets'], parsed['HTTP2.0_Packets'], parsed['x'])
+		    else if (type_name == "Load Time CDF")
+		        drawLineChart(parsed['all_packets']);
 //		    drawScatterPlot(parsed['vis_results'], parsed['sampled_labels'])
 		}
 	});
@@ -165,11 +171,12 @@ function changeComp(event){
     trace_table.style.display = "none";
 
     var chart_div = document.getElementById("chart");
-    chart_div.style.display = "block";
+    var chart_wrapper_div = document.getElementById("chart-wrapper");
+    var all_chart_div = document.getElementById("all_charts");
+    chart_wrapper_div.style.display = "block";
 
     var chart_div2 = document.getElementById("parcood_chart");
     chart_div2.style.display = "none";
-
 
     var chartTitle = document.getElementById("con33");
     chartTitle.innerHTML = type_name + " Graph";
@@ -181,7 +188,6 @@ function changeComp(event){
     trace_file.style.display = "none";
 
     var options = document.getElementById("con33333");
-    options.style.display = "block";
 
     var loader = document.getElementById("loader");
     loader.style.display = "none";
@@ -195,13 +201,25 @@ function changeComp(event){
 		success: function(msg){
 		    var parsed = JSON.parse(msg)
             d3.select("svg").remove();
-            original_https_data = parsed['https_packets'];
-            original_quic_data = parsed['quic_packets']
-            drawComparisonBarChart(original_quic_data, original_https_data);
+            original_HTTP1_data = parsed['HTTP1.1_packets'];
+            original_HTTP2_data = parsed['HTTP2.0_packets'];
+            original_quic_data = parsed['quic_packets'];
+            drawComparisonBarChart(original_HTTP1_data, original_HTTP2_data, original_quic_data);
             showVideoOptions(original_quic_data.length);
+            if(type_name=="Total Comparison"){
+                chart_div.style.display = "none";
+                all_chart_div.style.display = "inline";
+                drawMultipleBarCharts(parsed['TotalData']);
+                options.style.display = "none";
+            }
+            else{
+                all_chart_div.style.display = "none";
+                chart_div.style.display = "block";
+                options.style.display = "block";
+            }
 //            if (type_name == "Packet Size" || type_name == "Payload Size")
 //		        drawBarChart(parsed['all_packets']);
-//		    else if (type_name == "Packet Loss Rate")
+//		    if (type_name == "Packet Loss Rate")
 //		        drawPieChart(parsed['all_packets']);
 //		    drawScatterPlot(parsed['vis_results'], parsed['sampled_labels'])
 		}
@@ -295,34 +313,43 @@ function delete_video(index){
 
 function update_data(){
     quic_data = [];
-    https_data = [];
+    HTTP2_data = [];
+    HTTP1_data = [];
     for(i = 0; i < original_quic_data.length; i++){
         if(deleted.indexOf(i) == -1){
             quic_data.push(original_quic_data[i]);
-            https_data.push(original_https_data[i]);
+            HTTP2_data.push(original_HTTP2_data[i]);
+            HTTP1_data.push(original_HTTP1_data[i]);
         }
     }
     chart.load({
         columns: [
-            https_data,
+            HTTP1_data,
+            HTTP2_data,
             quic_data
         ],
-        unload: ['QUIC', 'HTTPS'],
+        unload: ['QUIC', 'HTTP2.0', 'HTTP1.1'],
     });
 }
 
 function changeProtocol(){
-    var HTTPS_protocol = document.getElementById("HTTPS_protocol");
-    if(HTTPS_protocol.checked)
-        chart.show(['HTTPS']);
+    var HTTP2_protocol = document.getElementById("HTTP2.0_protocol");
+    if(HTTP2_protocol.checked)
+        chart.show(['HTTP2.0']);
     else
-        chart.hide(['HTTPS']);
+        chart.hide(['HTTP2.0']);
 
     var QUIC_protocol = document.getElementById("QUIC_protocol");
     if(QUIC_protocol.checked)
         chart.show(['QUIC']);
     else
         chart.hide(['QUIC']);
+
+    var QUIC_protocol = document.getElementById("HTTP1.1_protocol");
+    if(QUIC_protocol.checked)
+        chart.show(['HTTP1.1']);
+    else
+        chart.hide(['HTTP1.1']);
 }
 
 function drawBarChart(data){
@@ -501,13 +528,14 @@ function angle(d) {
   return a < 0 ? a + 180 : a;
 }
 
-function drawComparisonBarChart(){
+function drawComparisonBarChart(data1, data2, data3){
     chart = c3.generate({
         bindto: '#chart',
         data: {
             columns: [
-                original_https_data,
-                original_quic_data
+                data1,
+                data2,
+                data3
             ],
             type: 'bar'
         },
@@ -521,16 +549,16 @@ function drawComparisonBarChart(){
 //    chart.resize({height:500, width:800});
 }
 
-function drawObjectNumberComparisonBarChart(quic_array, https_array, x_array){
-//    alert(x_array)
+function drawObjectNumberComparisonBarChart(HTTP1_array, quic_array, HTTP2_array, x_array){
     chart = c3.generate({
         bindto: '#chart',
         data: {
 //            x : 'x',
             columns: [
 //                x_array,
+                HTTP1_array,
+                HTTP2_array,
                 quic_array,
-                https_array
             ],
             type: 'bar'
         },
@@ -560,12 +588,36 @@ function groupData(){
 
     var groupDataButton = document.getElementById("Group_Data");
     if(groupDataButton.checked == true)
-        chart.groups([['HTTPS', 'QUIC']])
+        chart.groups([['HTTP2.0', 'QUIC', 'HTTP1.1']])
     else{
-        drawComparisonBarChart();
+        drawComparisonBarChart(original_HTTP1_data, original_HTTP2_data, original_quic_data);
 //        chart.load({
-//            columns: [original_https_data, original_quic_data]
+//            columns: [original_HTTP2.0_data, original_quic_data]
 //        });
+    }
+}
+
+function computeAverage(data){
+
+    var average = 0;
+    for(i = 1; i < data.length; i++){
+        average += data[i];
+    }
+    average = average * 1.0 / (data.length - 1);
+    return average;
+}
+
+function averageTotal(){
+    var averageDataButton = document.getElementById("Total_Average");
+    if(averageDataButton.checked == true){
+        var data1 = ['HTTP1.1', computeAverage(original_HTTP1_data)];
+        var data2 = ['HTTP2.0', computeAverage(original_HTTP2_data)];
+        var data3 = ['QUIC', computeAverage(original_quic_data)];
+//        alert(data1, data2)
+        drawComparisonBarChart(data1, data2, data3);
+    }
+    else{
+        drawComparisonBarChart(original_HTTP1_data, original_HTTP2_data, original_quic_data);
     }
 }
 
@@ -660,19 +712,91 @@ function drawParallelCoordinates(packets){
 
 
 function drawLineChart(data){
+//    alert(data)
     dataset = ['data1']
+    x_array = ['x']
     for(i = 0; i < data.length; i++){
-        dataset[i+1] = data[i];
+        dataset[i+1] = data[i][1];
+        x_array[i+1] = data[i][0];
     }
+//    alert(dataset)
+//    alert(x_array)
     var chart = c3.generate({
         bindto: "#chart",
         data: {
+            x: 'x',
             columns: [
+                x_array,
                 dataset,
             ]
         }
     });
 };
+
+
+function drawMultipleBarCharts(data){
+    x_array = ["HTTP1.1", "HTTP2.0", "QUIC"];
+//    drawSegmentBarChart(data[0], x_array, "Packet Size", "#chart1");
+    drawSegmentBarChart(data[1], x_array, "Payload Size", "#chart2");
+    drawSegmentBarChart(data[2], x_array, "Header Size", "#chart3");
+    drawSegmentBarChart(data[3], x_array, "Packet Number", "#chart4");
+    drawSegmentBarChart(data[4], x_array, "Throughput", "#chart5");
+    label1 = document.getElementById("chart1");
+    label1.title = "Packet Size";
+}
+
+
+//function processJsonData(data){
+//    my_array = [];
+//    my_array[0] = data["chart_title"];
+//    my_array[1] = data["HTTP1.1"];
+//    my_array[2] = data["HTTP2.0"];
+//    my_array[3] = data["QUIC"];
+//    return my_array;
+//}
+
+function drawSegmentBarChart(my_array, x_array, label_name, chart_name){
+//    console.log(my_array)
+    chart = c3.generate({
+        bindto: chart_name,
+        data: {
+            json: [
+                my_array,
+            ],
+            keys:{
+                value: x_array,
+            },
+            type: 'bar'
+        },
+        axis: {
+            x: {
+//                type: 'category',
+//                categories: x_array,
+                label: {
+                    text: label_name,
+                    position: 'outer-center'
+                }
+//                label: label_name
+            },
+            y: {
+                label: {
+                    text: 'Amount',
+                    position: 'outer-middle'
+                }
+//                label: 'Time (seconds)'
+            }
+        },
+        bar: {
+            width: {
+                ratio: 0.5 // this makes bar width 50% of length between ticks
+            },
+            title: "salam"
+        }
+    });
+
+//    chart.resize({height:500, width:800});
+}
+
 
 function drawScatterPlot(xy_data, labels){
     var data = [];

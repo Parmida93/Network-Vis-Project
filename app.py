@@ -29,6 +29,7 @@ centroids = []
 sampledLabels = []
 sampledData = []
 
+
 @app.route("/")
 def index():
     # global dataset, nameOfAttributes, labels, centroids, sampledData, sampledLabels
@@ -36,29 +37,32 @@ def index():
     # labels, centroids = read_k_mean_clustering()
     return render_template("index.html")
 
+
 @app.route("/metrics", methods=['POST'])
 def metrics_render():
     type_name = request.form['type_name']
     file_name = request.form['trace_file']
     sampling_type = request.form['sampling_type']
     samplingNo = request.form['samplingNo']
-    result, result2, result3, x = [], [], [], []
+    result, result2, result3, result4, x = [], [], [], [], []
     if type_name == "Packet Size" or type_name == "Payload Size" or type_name == "Header Size":
         result1 = read_file_type1(type_name, file_name)
-        result = sampleData(result1, sampling_type, samplingNo)
+        result = sample_data(result1, sampling_type, samplingNo)
     elif type_name == "Packet Loss Rate":
         result = read_file_type2(type_name, file_name)
-    elif type_name == "HTTPS/QUIC":
+    elif type_name == "Trace Table":
         result = read_file_type3(type_name, file_name)
     elif type_name == "Parallel Coordinates":
         result1 = read_file_type3(type_name, file_name)
-        result = sampleData(result1, sampling_type,samplingNo)
+        result = sample_data(result1, sampling_type,samplingNo)
     elif type_name == "Object Number Through Time":
-        result2, result3, x = read_file_type4(type_name, file_name)
-    return json.dumps({'all_packets': result, 'QUIC_Packets': result2, 'HTTPS_Packets': result3, 'x': x})
+        result2, result3, result4, x = read_file_type4(type_name, file_name)
+    elif type_name == "Load Time CDF":
+        result = load_time_cdf(file_name)
+    return json.dumps({'all_packets': result, 'HTTP1.1_Packets': result2, 'QUIC_Packets': result3, 'HTTP2.0_Packets': result4, 'x': x})
 
 
-def sampleData(data, sampling_type, samplingNum):
+def sample_data(data, sampling_type, samplingNum):
     result = []
     if sampling_type == "Binning":
         result = binning(data, int(samplingNum))
@@ -87,16 +91,15 @@ def read_file_type1(type_name, file_name):
 
 def read_file_type2(type_name, file_name):
     array_result = []
-    file_path = './Results/' + file_name + '.csv'
+    file_path = './Results/' + type_name + "/" + file_name + '.txt'
     f = open(file_path, 'r')
     for line in f:
         array_result.append(line)
     percent = [0 for i in range(len(array_result))]
-    packetNo = 0
-    for el in array_result:
-        packetNo += int(el)
-    for i in range(0, len(array_result)):
-        percent[i] = round((int(array_result[i]) * 100.0 / packetNo), 2)
+    lossNo = int(array_result[1])
+    packetNo = int(array_result[0])
+    percent[0] = round(lossNo * 100.0 / packetNo, 2)
+    percent[1] = round((packetNo - lossNo) * 100.0 / packetNo, 2)
     f.close()
     return percent
 
@@ -104,108 +107,104 @@ def read_file_type2(type_name, file_name):
 def read_file_type3(type_name, file_name):
     array_result = []
     file_path = './Results/Traces' + '/' + file_name + '.txt'
+    print('in file type')
     f = open(file_path, 'r')
     for line in f:
         array_result.append(line)
     return array_result
 
 
+def read_file_lines(file):
+    line = file.readline().split(" ")
+    x_array = line
+    array_result = file.readline().split(" ")
+    return array_result, x_array
+
+
 def read_file_type4(type_name, file_name):
-    file_path_HTTPS = './Results/' + type_name + '/' + file_name + '_HTTPS.txt'
+    print("here")
+    file_path_HTTP1 = './Results/' + type_name + '/' + file_name + '_HTTP1.1.txt'
+    file_path_HTTP2 = './Results/' + type_name + '/' + file_name + '_HTTP2.0.txt'
     file_path_QUIC = './Results/' + type_name + '/' + file_name + '_QUIC.txt'
-    f_HTTPS = open(file_path_HTTPS, 'r')
+    print file_path_HTTP1
+    f_HTTP1 = open(file_path_HTTP1, 'r')
+    f_HTTP2 = open(file_path_HTTP2, 'r')
     f_QUIC = open(file_path_QUIC, 'r')
-    x_array = f_QUIC.readline().split(" ")
-    array_result_QUIC = f_QUIC.readline().split(" ")
-    line = f_HTTPS.readline().split(" ")
-    if len(line) > len(x_array):
-        x_array = line
-    array_result_HTTPS = f_HTTPS.readline().split(" ")
-    f_HTTPS.close()
+
+    array_result_QUIC, x_array = read_file_lines(f_QUIC)
+    array_result_HTTP2, x_array = read_file_lines(f_HTTP2)
+    array_result_HTTP1, x_array = read_file_lines(f_HTTP1)
+
+    min_len = min(len(x_array), len(array_result_HTTP2), len(array_result_HTTP1), len(array_result_QUIC))
+
+    f_HTTP1.close()
+    f_HTTP2.close()
     f_QUIC.close()
-    return array_result_QUIC, array_result_HTTPS, x_array
+
+    # print len(x_array), x_array
+    # print len(array_result_HTTP1), array_result_HTTP1
+    # print len(array_result_HTTP2), array_result_HTTP2
+    # print len(array_result_QUIC), array_result_QUIC
+    return array_result_HTTP1[:min_len], array_result_QUIC[:min_len], array_result_HTTP2[:min_len], x_array[:min_len]
 
 
 @app.route("/compare", methods=['POST'])
 def compare_render():
     type_name = request.form['type_name']
-    quic_result, https_result = read_file_comp1(type_name)
-    return json.dumps({'quic_packets': quic_result, 'https_packets': https_result})
+    quic_result, HTTP1_result, HTTP2_result, totalData = [], [], [], []
+    if(type_name == "Total Comparison"):
+        totalData = read_file_comp2()
+    else:
+        quic_result, HTTP2_result, HTTP1_result = read_file_comp1(type_name)
+    return json.dumps({'quic_packets': quic_result, 'HTTP2.0_packets': HTTP2_result, 'HTTP1.1_packets': HTTP1_result, 'TotalData': totalData})
 
 
 def read_file_comp1(type_name):
     path = './Results/CSVs/'
     dirs = os.listdir( path )
     quic_results = ['QUIC']
-    https_results = ['HTTPS']
-    # with open(file_path) as csvfile:
-    #     reader = csv.DictReader(csvfile)
-    #     for row in reader:
-    #         array_result.append(row[type_name])
+    HTTP2_results = ['HTTP2.0']
+    HTTP1_results = ['HTTP1.1']
     for file in dirs:
-        array_result = []
-        # f = open((path + "/" + file), 'r')
         with open(path + file) as csvfile:
             reader = csv.DictReader(csvfile)
-            # print f
             row = reader.next()
             if "QUIC" in file:
                 quic_results.append(round(float(row[type_name]),2))
-            elif "HTTPS" in file:
-                https_results.append(round(float(row[type_name]),2))
-    return quic_results, https_results
+            elif "HTTP2.0" in file:
+                HTTP2_results.append(round(float(row[type_name]),2))
+            elif "HTTP1.1" in file:
+                HTTP1_results.append(round(float(row[type_name]),2))
+    return quic_results, HTTP2_results, HTTP1_results
 
 
-# @app.route("/text_visualization",  methods=['GET'])
-# def textshow(:
-#     x_data1, y_data1, x_data2, y_data2, words = compute_tfidf(readFiles())
-#     return json.dumps({'x_data1': x_data1.tolist(), 'y_data1': y_data1.tolist(), 'x_data2': x_data2.tolist(), 'y_data2': y_data2.tolist(), 'words': words})
-#
-# @app.route("/text")
-# def textindex():
-#     return render_template("textindex.html")
-#
-# @app.route("/sampling", methods=['POST'])
-# def selectSampling():
-#     global dataset, nameOfAttributes, labels, centroids, sampledLabels, sampledData
-#     samp = request.form['sampling']
-#     vis = request.form['visualization']
-#     sampNo = request.form['samplingNo']
-#     sampNo = int(sampNo)
-#     if(samp == "Adaptive Sampling"):
-#         sampledData, sampledLabels = adaptive_sampling(dataset, labels, centroids, sampNo)
-#     else:
-#         sampledData, sampledLabels = random_sampling(dataset, labels, centroids, sampNo)
-#     sampledData_float = []
-#     for s1 in sampledData:
-#         sampledData_float.append([float(s2) for s2 in s1])
-#     sampledData = sampledData_float
-#     pcaData, dim1, dim2 = computation(vis)
-#     return json.dumps({'pca_data': pcaData.tolist(), 'vis_results': [dim1, dim2], 'sampled_labels': sampledLabels})
-#
-#
-# @app.route("/visualization", methods=['POST'])
-# def selectVis():
-#     global dataset, nameOfAttributes, labels, centroids, sampledData, sampledLabels
-#     vis = request.form['visualization']
-#     pcaData, dim1, dim2 = computation(vis)
-#     return json.dumps({'pca_data': pcaData.tolist(), 'vis_results': [dim1, dim2], 'sampled_labels': sampledLabels})#, data2=json.dumps(dim1,dim2))
-#
-# def computation(vis):
-#     pcaData = find_intrinsic_dimensionality(sampledData)
-#     vis_results = []
-#     if(vis == "PCA"):
-#         vis_results = my_pca(sampledData)
-#     elif(vis == "Euclidian"):
-#         vis_results = euclidean_MDS(sampledData)
-#     elif(vis == "Cosine"):
-#         vis_results = cosine_MDS(sampledData)
-#     elif(vis == "Correlation"):
-#         vis_results = correlation_MDS(sampledData)
-#     elif(vis == "Isomap"):
-#         vis_results = isomap(sampledData)
-#     dim1, dim2 = split_array(vis_results)
-#     return pcaData, dim1, dim2
+def read_file_comp2():
+    path = './Results/JSONs/AVGResultsJSONFile.json'
+    with open(path) as data_file:
+        data = json.load(data_file)
+    print data
+    return data
+
+def load_time_cdf(file_name):
+    file_path = './Results/Traces' + '/' + file_name + '.txt'
+    f = open(file_path, 'r')
+    dict = {}
+    line = f.readline()
+    splitted = line.split(" ")
+    receiver = splitted[2]
+    sender = splitted[3]
+    dict[receiver] = 0
+    dict[sender] = 0
+    temp_array = [[0, 0]]
+    for line in f:
+        splitted = line.split(" ")
+        if splitted[3] == receiver:
+            temp_array.append([splitted[0] , (int(splitted[5]) + temp_array[len(temp_array)-1][1])])
+            dict[splitted[3]] += int(splitted[5])
+    for i in range(len(temp_array)):
+        temp_array[i][1] = temp_array[i][1] * 1.0 / dict[receiver]
+    return temp_array
+
 
 if __name__ == "__main__":
-    app.run(host='localhost',port=5000,debug=True)
+    app.run(host='localhost',port=5001,debug=True)

@@ -35,6 +35,25 @@
         font-family: sans-serif;
         font-size: 11px;
     }
+
+    .chart_headers {
+      height: 40px;
+      width: 430px;
+      font-size:200%;
+      color:#2471A3;
+      padding-top: 20px;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+    .multiple_charts {
+      height: 300px;
+      width: 430px;
+    }
+    .header_and_chart {
+      float: left;
+      border-style: double;
+      border-color:#2471A3;
+    }
       table {
           border-collapse: collapse;
           width: 100%;
@@ -81,7 +100,7 @@
 <body>
   {% block menu %}
   <div id="title">
-    <div id="title1">QUIC vs. HTTPS</div>
+    <div id="title1">QUIC vs. HTTP2.0 vs. HTTP1.1</div>
   </div>
   <div id="main1">
     <ul id="menu2">
@@ -89,7 +108,7 @@
         <div class="dropdown_1column align_left" style="z-index: 10;">
           <div class="col_1">
             <ul class="simple" id="trace_menu" onclick="showTrace()">
-              <li><a href="#">HTTPS/QUIC</a></li>
+              <li><a href="#">Trace Table</a></li>
               <!--<li><a href="#">QUIC</a></li>-->
             </ul>
           </div>
@@ -103,9 +122,10 @@
               <li><a href="#">Packet Size</a></li>
               <li><a href="#">Payload Size</a></li>
               <li><a href="#">Header Size</a></li>
-              <li><a href="#">Payload Time</a></li>
+              <!--<li><a href="#">Payload Time</a></li>-->
               <li><a href="#">Object Number Through Time</a></li>
-              <!--<li><a href="#">Packet Loss Rate</a></li>-->
+              <li><a href="#">Load Time CDF</a></li>
+              <li><a href="#">Packet Loss Rate</a></li>
             </ul>
           </div>
         </div>
@@ -117,10 +137,9 @@
               <li><a href="#">Average Packet Size</a></li>
               <li><a href="#">Average Payload Size</a></li>
               <li><a href="#">Average Header Size</a></li>
-              <li><a href="#">Average Payload Time</a></li>
-              <!--<li><a href="#">Average Packet Loss Rate</a></li>-->
-              <!--<li><a href="#">Average Number of Retransmits</a></li>-->
-              <li><a href="#">Average Number of Packets</a></li>
+              <li><a href="#">Number of Packets</a></li>
+              <li><a href="#">Throughput</a></li>
+              <li><a href="#">Total Comparison</a></li>
             </ul>
           </div>
         </div>

@@ -248,6 +248,9 @@ function showTrace(event){
     var sampling_div = document.getElementById("sampling_div")
     sampling_div.style.display = "none";
 
+    var all_charts_div = document.getElementById("all_charts")
+    all_charts_div.style.display = "none"
+
     changeTraceFile();
 }
 
@@ -741,8 +744,6 @@ function drawMultipleBarCharts(data){
     drawSegmentBarChart(data[2], x_array, "Header Size", "#chart3");
     drawSegmentBarChart(data[3], x_array, "Packet Number", "#chart4");
     drawSegmentBarChart(data[4], x_array, "Throughput", "#chart5");
-    label1 = document.getElementById("chart1");
-    label1.title = "Packet Size";
 }
 
 

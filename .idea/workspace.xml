@@ -5,44 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dce059b6-bb7c-43ff-a865-810ec84b3303" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ComputeAverage.py" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\.idea\.name" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\CSVs\Video1_HTTPS.csv" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\CSVs\Video2_HTTPS.csv" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\CSVs\Video3_HTTPS.csv" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\CSVs\Video4_HTTPS.csv" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Packet Loss Rate\Video1_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Packet Loss Rate\Video2_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Packet Loss Rate\Video3_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Packet Loss Rate\Video4_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Traces\Video1_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Traces\Video2_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Traces\Video3_HTTPS.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ghahr\Dropbox\Stony Brook\2016-Spring\Network\Project\VisualizationPart\Results\Traces\Video4_HTTPS.txt" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DataProcessing.py" afterPath="$PROJECT_DIR$/DataProcessing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/CSVs/Video1_QUIC.csv" afterPath="$PROJECT_DIR$/Results/CSVs/Video1_QUIC.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Packet Loss Rate/Video1_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Packet Loss Rate/Video1_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Traces/Video1_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Traces/Video1_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/CSVs/Video2_QUIC.csv" afterPath="$PROJECT_DIR$/Results/CSVs/Video2_QUIC.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Packet Loss Rate/Video2_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Packet Loss Rate/Video2_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Traces/Video2_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Traces/Video2_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/CSVs/Video3_QUIC.csv" afterPath="$PROJECT_DIR$/Results/CSVs/Video3_QUIC.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Object Number Through Time/Video3_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Object Number Through Time/Video3_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Packet Loss Rate/Video3_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Packet Loss Rate/Video3_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Traces/Video3_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Traces/Video3_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/CSVs/Video4_QUIC.csv" afterPath="$PROJECT_DIR$/Results/CSVs/Video4_QUIC.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Packet Loss Rate/Video4_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Packet Loss Rate/Video4_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Results/Traces/Video4_QUIC.txt" afterPath="$PROJECT_DIR$/Results/Traces/Video4_QUIC.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/VisualizationPart.iml" afterPath="$PROJECT_DIR$/.idea/VisualizationPart.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/base.html" afterPath="$PROJECT_DIR$/templates/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/graphs.js" afterPath="$PROJECT_DIR$/static/js/graphs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/index.html" afterPath="$PROJECT_DIR$/templates/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/lib/css/menu.css" afterPath="$PROJECT_DIR$/static/lib/css/menu.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="VisualizationPart.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -120,8 +83,8 @@
       <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.8461537">
-              <caret line="110" column="41" selection-start-line="110" selection-start-column="41" selection-end-line="110" selection-end-column="41" />
+            <state vertical-scroll-proportion="-4.1923075">
+              <caret line="109" column="65" selection-start-line="109" selection-start-column="56" selection-end-line="109" selection-end-column="65" />
               <folding>
                 <marker date="1463409068813" expanded="true" signature="656:777" placeholder="..." />
               </folding>
@@ -144,8 +107,8 @@
       <file leaf-file-name="graphs.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/static/js/graphs.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.1173708">
-              <caret line="39" column="8" selection-start-line="39" selection-start-column="8" selection-end-line="39" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.6126761">
+              <caret line="251" column="33" selection-start-line="251" selection-start-column="33" selection-end-line="251" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -442,7 +405,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.123495884" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -592,16 +555,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.8461537">
-          <caret line="110" column="41" selection-start-line="110" selection-start-column="41" selection-end-line="110" selection-end-column="41" />
-          <folding>
-            <marker date="1463409068813" expanded="true" signature="656:777" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.8979592">
@@ -628,10 +581,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/templates/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.1923075">
+          <caret line="109" column="65" selection-start-line="109" selection-start-column="56" selection-end-line="109" selection-end-column="65" />
+          <folding>
+            <marker date="1463409068813" expanded="true" signature="656:777" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/static/js/graphs.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1173708">
-          <caret line="39" column="8" selection-start-line="39" selection-start-column="8" selection-end-line="39" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.6126761">
+          <caret line="251" column="33" selection-start-line="251" selection-start-column="33" selection-end-line="251" selection-end-column="33" />
           <folding />
         </state>
       </provider>
